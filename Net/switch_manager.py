@@ -12,13 +12,16 @@ class NetworkDevice:
         self.connection = None
 
     def establish_connection(self):
+        """Установка SSH-соединения с устройством."""
         self.connection = ConnectHandler(**self.device_info)
 
     def disconnect(self):
+        """Отключение от устройства."""
         if self.connection:
             self.connection.disconnect()
 
     def send_command(self, command):
+        """Отправка команды на устройство и получение вывода."""
         return self.connection.send_command(command)
 
 
@@ -199,9 +202,9 @@ class SwitchManager:
 
 
 def run_switch_manager(ip, username, password):
+    """Запуск менеджера коммутаторов с заданными параметрами."""
     devices = [
-        {'ip': ip, 'username': username, 'password': password, 'device_type': 'dlink_ds_ssh'},
-        # Добавьте остальные коммутаторы в список
+        {'ip': ip, 'username': username, 'password': password, 'device_type': 'dlink_ds_ssh'}
     ]
     for device_info in devices:
         switch_manager = SwitchManager(device_info)
