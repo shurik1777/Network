@@ -1,6 +1,7 @@
 ﻿# Импорт необходимых библиотек
 import openpyxl  # Для работы с Excel-файлами (установка: pip install openpyxl)
 import re  # Для работы с регулярными выражениями
+import argparse
 from netmiko import ConnectHandler  # Для установки SSH-соединений с устройствами (установка: pip install netmiko)
 from pathlib import Path  # Для работы с путями к файлам и директориям
 from openpyxl.styles import Alignment, Font  # Для настройки стилей ячеек в Excel
@@ -182,6 +183,9 @@ class SwitchManager:
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("output_filename")
+    args = parser.parse_args()
     devices = [
         {'ip': '0.0.0.0', 'username': 'login', 'password': 'password', 'device_type': 'dlink_ds_ssh'},
         {'ip': '0.0.0.0', 'username': 'login', 'password': 'password', 'device_type': 'dlink_ds_ssh'},
@@ -211,12 +215,14 @@ def main():
 
         # Сохранение в Excel-файл
         workbook = switch_manager.save_to_excel(switch_info_output, switch_ports_output, parsed_vlans)
-
-        file_number = 1
-        file_name = f'switch_info_{device_info["ip"]}_{file_number}.xlsx'
-        while Path(file_name).is_file():
-            file_number += 1
+        if not args.output_filename:
+            file_number = 1
             file_name = f'switch_info_{device_info["ip"]}_{file_number}.xlsx'
+            while Path(file_name).is_file():
+                file_number += 1
+                file_name = f'switch_info_{device_info["ip"]}_{file_number}.xlsx'
+        else:
+            file_name = args.output_filename
 
         workbook.save(file_name)
 
