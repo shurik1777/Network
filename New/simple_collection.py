@@ -1,17 +1,17 @@
-from netmiko import ConnectHandler, NetmikoTimeoutException, NetmikoAuthenticationException
+from netmiko import (ConnectHandler, NetmikoTimeoutException
+, NetmikoAuthenticationException)
 import datetime
 import logging
 
-# Настройка логирования
 logging.basicConfig(filename='error_log.txt', level=logging.ERROR,
                     format='%(asctime)s - %(message)s')
 
 # Информация о свитче
-switch_ip = "192.168.11.111"
-username = "rt"
-password = "gfhjkmyfcdbnx"
-model = "DES3200"  # замените на вашу модель
-TFTP = "192.168.10.253"  # замените на ваш сервер
+switch_ip = "000.000.000.000"
+username = "name"
+password = "pass"
+model = "dlink_ds_ssh"  # замените на вашу модель
+TFTP = "000.000.000.000"  # замените на ваш сервер
 
 # Данные для подключения
 device_info = {

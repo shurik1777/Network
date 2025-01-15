@@ -5,8 +5,8 @@ import datetime
 import logging
 
 logging.basicConfig(filename='log_2.txt', level=logging.ERROR,
-                    format='%(asctime)s %(clientip) %(levelname)s: %(message)s',
-                    encoding='UTF-8',)
+                    format='%(asctime)s %(levelname)s: %(message)s',
+                    encoding='UTF-8', )
 
 username = "rt"
 password = "gfhjkmyfcdbnx"
@@ -53,7 +53,6 @@ class MyFrame(wx.Frame):
         else:
             wx.MessageBox('Пожалуйста, введите корректные IP-адреса!', 'Ошибка', wx.OK | wx.ICON_ERROR)
 
-
     def validate_ip(self, ip):
         parts = ip.split('.')
         return len(parts) == 4 and all(part.isdigit() and 0 <= int(part) <= 255 for part in parts)
@@ -68,6 +67,7 @@ def generate_switches(start_ip, end_ip):
 
 def main(start_ip, end_ip):
     switches = generate_switches(start_ip, end_ip)
+    successful_count = 0
     for switch_ip in switches:
         success = False
         error_message = ""
@@ -100,19 +100,28 @@ def main(start_ip, end_ip):
                     output = connection.send_command(command)
                     success = True
                     logging.info(f"Свитч: {switch_ip}, успешно выполнен с dest_file.")
+                    successful_count += 1
 
                 except Exception as e:
                     error_message += f"\nТакже возникла ошибка с dest_file: {e}"
                     logging.error(error_message)
+                    # wx.MessageBox(f"Обработка завершена! Всего успешно обработано "
+                    #     f"{successful_count} свитчей.", "Завершение работы",
+                    #     wx.OK | wx.ICON_INFORMATION)
+
 
                 finally:
                     if not success:
-                        logging.error(f"Свитч: {switch_ip}, обе попытки завершились с ошибкой: {error_message}")
-                        dlg = wx.MessageDialog(None, 'Все сделано!', 'Информация', wx.OK | wx.ICON_INFORMATION)
+                        logging.error(f"Свитч: {switch_ip},"
+                                      f" обе попытки завершились с ошибкой: {error_message}")
+                        dlg = wx.MessageDialog(None, 'Все сделано!',
+                                               'Информация', wx.OK | wx.ICON_INFORMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
 
                     connection.disconnect()
+                    print(f"Обработка завершена! Всего успешно обработано {successful_count} свитчей."
+                          f"\nМожно продолжать дальше!")
 
 
 if __name__ == "__main__":
