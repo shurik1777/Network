@@ -166,4 +166,4 @@ cython_debug/
 /.idea/vcs.xml
 /.idea/Net.iml
 .idea/Net.iml
-.idea
+.idea!/.idea/Net.iml
